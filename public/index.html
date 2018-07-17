@@ -10,12 +10,24 @@
 
 <body>
 
-  <h1>Welcome to my App</h1>
+  <div id="app">
+    <h1>Welcome to my App</h1>
 
 
+    <form @submit.prevent="sendMessage">
+      <input type="text" placeholder="Message" required v-model="message" />
+      <button type="submit">Send</button>
+    </form>
+
+    <div>
+      <ul>
+        <li v-for="msg in messages">{{ msg.from }}: {{ msg.text }}</li>
+      </ul>
+    </div>
+
+  </div>
   <script src="/socket.io/socket.io.js"></script>
-
-  <script src="./js/index.js"> </script>
+  <script type="module" src="./js/index.js"> </script>
 </body>
 
 </html>
