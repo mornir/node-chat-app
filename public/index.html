@@ -19,21 +19,20 @@
 
     <section class="chat__main">
       <ol class="chat__messages">
-        <li v-for="msg in messages">{{ msg.from }}
-          <span>
-            {{ msg.createAt | formatTime }}
-          </span>:
-          <span v-if="msg.text">{{ msg.text }}</span>
-          <a v-else :href="msg.url">my location</a>
-        </li>
+        <message-template v-for="msg in messages" :msg="msg" :key="msg.createAt"></message-template>
+
       </ol>
+
 
       <footer class="chat__footer">
 
         <form @submit.prevent="sendMessage">
           <input type="text" placeholder="Message" required v-model="message" autofocus autocomplete="off" />
+
           <button type="submit">Send</button>
         </form>
+
+
 
         <button @click="sendLocation" :disabled="isButtonDisabled">{{ sendLocationButtonText }}</button>
 
