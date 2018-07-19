@@ -42,6 +42,11 @@ new Vue({
       )
     },
   },
+  filters: {
+    formatTime(str) {
+      return dateFns.format(str, 'HH:mm a')
+    },
+  },
   created() {
     socket.on('newMessage', msg => {
       console.log('received a new message', msg)
