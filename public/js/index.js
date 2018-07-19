@@ -15,14 +15,29 @@ new Vue({
   data: {
     message: '',
     messages: [],
+    isButtonDisabled: false,
+    sendLocationButtonText: 'Send Location',
   },
   methods: {
     sendMessage() {
-      socket.emit(
-        'createMessage',
-        { from: 'test', text: this.message },
-        data => {
-          console.log('got it', data)
+      socket.emit('createMessage', { from: 'test', text: this.message }, () => {
+        this.message = ''
+      })
+    },
+    sendLocation() {
+      this.isButtonDisabled = true
+      this.sendLocationButtonText = 'Sending location...'
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude, longitude } }) => {
+          socket.emit('createLocationMessage', {
+            latitude,
+            longitude,
+          })
+        },
+        () => {
+          alert('Unable to fetch location.')
+          this.isButtonDisabled = false
+          this.sendLocationButtonText = 'Send Location'
         }
       )
     },
@@ -31,6 +46,13 @@ new Vue({
     socket.on('newMessage', msg => {
       console.log('received a new message', msg)
       this.messages.push(msg)
+    })
+
+    socket.on('newLocationMessage', msg => {
+      console.log('received a new message', msg)
+      this.messages.push(msg)
+      this.isButtonDisabled = false
+      this.sendLocationButtonText = 'Send Location'
     })
   },
 })

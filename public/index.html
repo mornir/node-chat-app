@@ -3,27 +3,40 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Document</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
 
-  <div id="app">
-    <h1>Welcome to my App</h1>
+  <div id="app" class="chat">
 
+    <aside class="chat__sidebar">
+      <h3>People</h3>
+      <div></div>
+    </aside>
 
-    <form @submit.prevent="sendMessage">
-      <input type="text" placeholder="Message" required v-model="message" />
-      <button type="submit">Send</button>
-    </form>
+    <section class="chat__main">
+      <ol class="chat__messages">
+        <li v-for="msg in messages">{{ msg.from }}:
+          <span v-if="msg.text">{{ msg.text }}</span>
+          <a v-else :href="msg.url">my location</a>
+        </li>
+      </ol>
 
-    <div>
-      <ul>
-        <li v-for="msg in messages">{{ msg.from }}: {{ msg.text }}</li>
-      </ul>
-    </div>
+      <footer class="chat__footer">
+
+        <form @submit.prevent="sendMessage">
+          <input type="text" placeholder="Message" required v-model="message" autofocus autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+
+        <button @click="sendLocation" :disabled="isButtonDisabled">{{ sendLocationButtonText }}</button>
+
+      </footer>
+    </section>
+
 
   </div>
   <script src="/socket.io/socket.io.js"></script>
