@@ -10,40 +10,27 @@
 
 <body>
 
-  <div id="app" class="chat">
+  <div class="centered-form">
 
-    <aside class="chat__sidebar">
-      <h3>People</h3>
-      <div></div>
-    </aside>
-
-    <section class="chat__main">
-      <ol class="chat__messages">
-        <message-template v-for="msg in messages" :msg="msg" :key="msg.createAt"></message-template>
-
-      </ol>
-
-
-      <footer class="chat__footer">
-
-        <form @submit.prevent="sendMessage">
-          <input type="text" placeholder="Message" required v-model="message" autofocus autocomplete="off" />
-
-          <button type="submit">Send</button>
-        </form>
-
-
-
-        <button @click="sendLocation" :disabled="isButtonDisabled">{{ sendLocationButtonText }}</button>
-
-      </footer>
-    </section>
-
-
+    <div class="centered-form__form">
+      <form action="/chat.html">
+        <div class="form-field">
+          <h3>Join a Chat</h3>
+        </div>
+        <div class="form-field">
+          <label for="name">Display name</label>
+          <input type="text" name="name" autofocus>
+        </div>
+        <div class="form-field">
+          <label for="room">Roon name</label>
+          <input type="text" name="room">
+        </div>
+        <div class="form-field">
+          <button>JOIN</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="js/lib/datefns.js"></script>
-  <script type="module" src="./js/index.js"> </script>
 </body>
 
 </html>

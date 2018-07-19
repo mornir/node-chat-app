@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <div id="app" class="chat">
+
+    <aside class="chat__sidebar">
+      <h3>People</h3>
+      <div></div>
+    </aside>
+
+    <section class="chat__main">
+      <ol class="chat__messages">
+        <message-template v-for="msg in messages" :msg="msg" :key="msg.createAt"></message-template>
+
+      </ol>
+
+
+      <footer class="chat__footer">
+
+        <form @submit.prevent="sendMessage">
+          <input type="text" placeholder="Message" required v-model="message" autofocus autocomplete="off" />
+
+          <button type="submit">Send</button>
+        </form>
+
+
+
+        <button @click="sendLocation" :disabled="isButtonDisabled">{{ sendLocationButtonText }}</button>
+
+      </footer>
+    </section>
+
+
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/lib/datefns.js"></script>
+  <script type="module" src="./js/chat.js"> </script>
+</body>
+
+</html>
