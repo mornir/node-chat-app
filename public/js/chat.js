@@ -1,9 +1,19 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.esm.browser.js'
 
+import { deparam } from './lib/deparam.js'
+
 const socket = io()
 
 socket.on('connect', () => {
-  console.log('Connected to Server')
+  const params = deparam(window.location.search)
+  socket.emit('join', params, err => {
+    if (err) {
+      alert(err)
+      window.location.href = '/'
+    } else {
+      console.log('No error')
+    }
+  })
 })
 
 socket.on('disconnect', () => {
@@ -44,6 +54,7 @@ new Vue({
     messages: [],
     isButtonDisabled: false,
     sendLocationButtonText: 'Send Location',
+    users: [],
   },
   methods: {
     sendMessage() {
@@ -71,16 +82,20 @@ new Vue({
   },
 
   created() {
+    const obj = deparam(window.location.search)
+
     socket.on('newMessage', msg => {
-      console.log('received a new message', msg)
       this.messages.push(msg)
     })
 
     socket.on('newLocationMessage', msg => {
-      console.log('received a new message', msg)
       this.messages.push(msg)
       this.isButtonDisabled = false
       this.sendLocationButtonText = 'Send Location'
+    })
+
+    socket.on('updateUserList', users => {
+      this.users = users
     })
   },
 })

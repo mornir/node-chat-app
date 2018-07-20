@@ -14,7 +14,11 @@
 
     <aside class="chat__sidebar">
       <h3>People</h3>
-      <div></div>
+      <div id="users">
+        <ol>
+          <li v-for="user in users">{{ user }}</li>
+        </ol>
+      </div>
     </aside>
 
     <section class="chat__main">
