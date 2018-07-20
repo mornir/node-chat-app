@@ -58,7 +58,8 @@ new Vue({
   },
   methods: {
     sendMessage() {
-      socket.emit('createMessage', { from: 'test', text: this.message }, () => {
+      //const params = deparam(window.location.search)
+      socket.emit('createMessage', { text: this.message }, () => {
         this.message = ''
       })
     },
@@ -82,8 +83,6 @@ new Vue({
   },
 
   created() {
-    const obj = deparam(window.location.search)
-
     socket.on('newMessage', msg => {
       this.messages.push(msg)
     })
