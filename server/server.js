@@ -65,8 +65,6 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     const user = users.removeUser(socket.id)
-    console.log('disconnecting', user)
-
     if (user) {
       io.to(user.room).emit('updateUserList', users.getUserList(user.room))
       io.to(user.room).emit('createMessage', {
