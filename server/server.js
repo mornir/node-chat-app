@@ -53,6 +53,11 @@ io.on('connection', socket => {
     callback()
   })
 
+  socket.on('createOffer', data => {
+    console.log('create streaming', data)
+    socket.broadcast.to('A').emit('transmitOffer', data)
+  })
+
   socket.on('createLocationMessage', ({ latitude, longitude }) => {
     const { room, name } = users.getUser(socket.id)
     if (room) {

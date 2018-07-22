@@ -55,8 +55,35 @@ new Vue({
     isButtonDisabled: false,
     sendLocationButtonText: 'Send Location',
     users: [],
+    peer: null,
   },
   methods: {
+    async startAudioChat() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true,
+        })
+
+        //TODO: understand why this.stream using vue doesn't work
+
+        this.peer = new SimplePeer({
+          initiator: true,
+          stream,
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:global.stun.twilio.com:3478?transport=udp' },
+              { urls: 'stun:stun.services.mozilla.com' },
+            ],
+          },
+        })
+
+        this.bindEvents(this.peer)
+      } catch (e) {
+        console.log(e.message)
+      }
+    },
     sendMessage() {
       //const params = deparam(window.location.search)
       socket.emit('createMessage', { text: this.message }, () => {
@@ -80,11 +107,51 @@ new Vue({
         }
       )
     },
+    bindEvents(p) {
+      p.on('error', err => {
+        console.log(err)
+      })
+
+      p.on('signal', data => {
+        socket.emit('createOffer', data)
+      })
+
+      p.on('stream', stream => {
+        console.log('got remote audio stream', stream)
+        document.querySelector('#audio-tag').srcObject = stream
+      })
+    },
   },
 
   created() {
     socket.on('newMessage', msg => {
       this.messages.push(msg)
+    })
+
+    socket.on('transmitOffer', data => {
+      console.log('receiving Offer', data)
+      if (this.peer === null) {
+        // peer 2
+        this.peer = new SimplePeer({
+          initiator: false,
+          config: {
+            iceServers: [
+              {
+                urls: 'stun:stun.l.google.com:19302',
+              },
+              {
+                urls: 'stun:global.stun.twilio.com:3478?transport=udp',
+              },
+              {
+                urls: 'stun:stun.services.mozilla.com',
+              },
+            ],
+          },
+        })
+        this.bindEvents(this.peer)
+      }
+
+      this.peer.signal(data)
     })
 
     socket.on('newLocationMessage', msg => {

@@ -37,15 +37,16 @@
         </form>
 
 
-
+        <button @click="startAudioChat" style="margin-right: 0.2rem">Audio Chat</button>
         <button @click="sendLocation" :disabled="isButtonDisabled">{{ sendLocationButtonText }}</button>
 
       </footer>
     </section>
 
-
+    <audio id="audio-tag" autoplay playsinline></audio>
   </div>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="js/lib/simplePeer.js"></script>
   <script src="js/lib/datefns.js"></script>
   <script type="module" src="./js/chat.js"> </script>
 </body>
