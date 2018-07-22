@@ -22,11 +22,6 @@ socket.on('disconnect', () => {
 
 Vue.component('message-template', {
   props: ['msg'],
-  data() {
-    return {
-      dd: 0,
-    }
-  },
   filters: {
     formatTime(str) {
       return dateFns.format(str, 'HH:mm a')
@@ -128,8 +123,15 @@ new Vue({
       this.messages.push(msg)
     })
 
-    socket.on('transmitOffer', data => {
+    socket.on('transmitOffer', ({ name, data }) => {
       console.log('receiving Offer', data)
+
+      this.messages.push({
+        from: 'Admin',
+        text: `${name} would like to start an audio conversation with <b>you</b>`,
+        createAt: new Date().getTime(),
+      })
+
       if (this.peer === null) {
         // peer 2
         this.peer = new SimplePeer({

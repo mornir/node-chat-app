@@ -54,8 +54,9 @@ io.on('connection', socket => {
   })
 
   socket.on('createOffer', data => {
-    console.log('create streaming', data)
-    socket.broadcast.to('A').emit('transmitOffer', data)
+    const { room, name } = users.getUser(socket.id)
+    console.log('got Offer')
+    socket.broadcast.to(room).emit('transmitOffer', { name, data })
   })
 
   socket.on('createLocationMessage', ({ latitude, longitude }) => {
