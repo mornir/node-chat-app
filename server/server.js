@@ -25,9 +25,13 @@ io.on('connection', socket => {
       return callback('Name and room are required.')
     }
 
+    console.log(`${name} has join the room`)
+
     socket.join(room)
     users.removeUser(socket.id)
-    users.addUser(socket.id, name, room)
+    const user = users.addUser(socket.id, name, room)
+
+    console.log('nouvel utilisateur', user)
 
     io.to(room).emit('updateUserList', users.getUserList(room))
 
@@ -44,9 +48,11 @@ io.on('connection', socket => {
   })
 
   socket.on('createMessage', (msg, callback) => {
-    const { room, name } = users.getUser(socket.id)
+    const user = users.getUser(socket.id)
 
-    if (room && isRealString(msg.text)) {
+    if (user) {
+      console.log('createMessage', user)
+      const { room, name } = user
       io.to(room).emit('newMessage', generateMessage(name, msg.text))
     }
 
@@ -71,12 +77,17 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     const user = users.removeUser(socket.id)
+
     if (user) {
-      io.to(user.room).emit('updateUserList', users.getUserList(user.room))
-      io.to(user.room).emit('createMessage', {
-        from: 'Admin',
-        text: `${user.name} has left the room`,
-      })
+      const { room, name } = user
+
+      console.log(`${name} has left the room`)
+
+      io.to(room).emit('updateUserList', users.getUserList(room))
+      io.to(room).emit(
+        'createMessage',
+        generateMessage('Admin', `${name} has left`)
+      )
     }
   })
 })
