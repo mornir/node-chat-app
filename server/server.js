@@ -85,7 +85,7 @@ io.on('connection', socket => {
 
       io.to(room).emit('updateUserList', users.getUserList(room))
       io.to(room).emit(
-        'createMessage',
+        'newMessage',
         generateMessage('Admin', `${name} has left`)
       )
     }
