@@ -75,6 +75,19 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('askAudio', () => {
+    // const user = users.getUser(socket.id)
+
+    socket.broadcast.to('A').emit('shareAudioModal')
+
+    /*     if (user) {
+      console.log('askAudio')
+      const { room, name } = user
+
+
+    } */
+  })
+
   socket.on('disconnect', () => {
     const user = users.removeUser(socket.id)
 
