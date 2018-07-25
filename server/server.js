@@ -60,14 +60,17 @@ io.on('connection', socket => {
   })
 
   socket.on('createOffer', data => {
-    const { room, name } = users.getUser(socket.id)
+    const user = users.getUser(socket.id)
     console.log('got Offer')
-    socket.broadcast.to(room).emit('transmitOffer', { name, data })
+    if (user) {
+      socket.broadcast.to(user.room).emit('transmitOffer', data)
+    }
   })
 
   socket.on('createLocationMessage', ({ latitude, longitude }) => {
-    const { room, name } = users.getUser(socket.id)
-    if (room) {
+    const user = users.getUser(socket.id)
+    if (user) {
+      const { room, name } = user
       io.to(room).emit(
         'newLocationMessage',
         generateLocationMessage(name, latitude, longitude)
@@ -76,16 +79,12 @@ io.on('connection', socket => {
   })
 
   socket.on('askAudio', () => {
-    // const user = users.getUser(socket.id)
-
-    socket.broadcast.to('A').emit('shareAudioModal')
-
-    /*     if (user) {
-      console.log('askAudio')
+    const user = users.getUser(socket.id)
+    console.log('askAudio')
+    if (user) {
       const { room, name } = user
-
-
-    } */
+      socket.broadcast.to(room).emit('shareAudioModal', name)
+    }
   })
 
   socket.on('disconnect', () => {
